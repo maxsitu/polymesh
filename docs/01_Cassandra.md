@@ -25,6 +25,11 @@ $> docker pull datastax/dse-studio:latest
 $> docker run -e DS_LICENSE=accept --memory 4g --name polymesh-dse -d datastax/dse-server -g -s -k
 ```
 
+### Start the DataStax Server Container locally with Port
+```bash
+docker run -e DS_LICENSE=accept --memory 4g --name polymesh-dse -p 127.0.0.1:9042:9042 -d datastax/dse-server
+```
+
 ### Start DataStax Studio Container
 1. `-link` parameter provides a way to map a hostname to a container IP address. In this example, 
 we map the database container to Studio container by providing its name, "polymesh-dse"
