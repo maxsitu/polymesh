@@ -37,5 +37,6 @@ abstract class PolymeshApplication(context: LagomApplicationContext)
   override lazy val jsonSerializerRegistry: JsonSerializerRegistry = PolymeshSerializerRegistry
 
   // Register the PolyMesh persistent entity
-  persistentEntityRegistry.register(wire[PolymeshEntity])
+  persistentEntityRegistry
+    .register(wire[PolymeshEntity])
 }

@@ -1,5 +1,6 @@
 target
 ideatarget
+.idea
 .target
 bin
 .idea
@@ -12,3 +13,4 @@ bin
 .factorypath
 .settings
 logs
+cassandra_data
