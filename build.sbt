@@ -6,8 +6,7 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.12.1",
   scalacOptions += "-deprecation",
   scalacOptions += "-feature",
-  resolvers += Resolver
-    .sonatypeRepo("snapshots")
+  resolvers ++= Seq(Resolver.sonatypeRepo("snapshots"), Resolver.jcenterRepo)
 )
 
 addCommandAlias("mgm", "migration_manager/run")
