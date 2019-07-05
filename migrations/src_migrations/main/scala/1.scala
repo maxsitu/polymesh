@@ -1,19 +1,15 @@
-import slick.jdbc.H2Profile.api._
+import slick.jdbc.PostgresProfile.api._
 import com.liyaos.forklift.slick.SqlMigration
 
 object M1 {
-
-
-  PolymeshMigrations
-    .migrations = PolymeshMigrations
-    .migrations :+ SqlMigration(1)(
+  PolymeshMigrations.migrations = PolymeshMigrations.migrations :+ SqlMigration(1)(
     List(
       sqlu"""
-            create table user
+             create table "user"
             (
               id          SERIAL PRIMARY KEY,
               password    VARCHAR(128) NOT NULL,
-              last_login  DATETIME(6) NULL,
+              last_login  TIMESTAMP NULL,
               first_name  VARCHAR(30) NOT NULL,
               last_name     VARCHAR(150) NOT NULL,
               is_root_user  BOOLEAN NOT NULL,
@@ -26,7 +22,7 @@ object M1 {
         """,
 
       sqlu"""
-            create table auth_group
+            create table "auth_group"
             (
             	id    SERIAL PRIMARY KEY,
             	name  VARCHAR(150) NOT NULL,
@@ -35,7 +31,7 @@ object M1 {
         """,
 
       sqlu"""
-            create table auth_content_type
+            create table "auth_content_type"
             (
             	id        SERIAL PRIMARY KEY,
             	app_label VARCHAR(100) NOT NULL,
@@ -44,39 +40,39 @@ object M1 {
             )
         """,
 
-      sqlu"""
-            create table auth_permission
+   sqlu"""
+            create table "auth_permission"
             (
             	id    SERIAL PRIMARY KEY,
             	name  VARCHAR(255) NOT NULL,
             	content_type_id   INT NOT NULL,
             	codename          VARCHAR(100) NOT NULL,
             	unique (content_type_id, codename),
-            	foreign key (content_type_id) references auth_content_type (id)
+            	foreign key (content_type_id) references "auth_content_type" (id)
             );
         """,
 
       sqlu"""
-            create table auth_group_permissions
+            create table "auth_group_permissions"
             (
             	id        SERIAL PRIMARY KEY,
             	group_id  INT NOT NULL,
             	permission_id INT NOT NULL,
             	UNIQUE (group_id, permission_id),
-            	FOREIGN KEY (permission_id) REFERENCES auth_permission (id),
-            	FOREIGN KEY (group_id) REFERENCES auth_group (id)
+            	FOREIGN KEY (permission_id) REFERENCES "auth_permission" (id),
+            	FOREIGN KEY (group_id) REFERENCES "auth_group" (id)
             )
         """,
 
       sqlu"""
-            create table user_group
+            create table "user_group"
             (
             	id          SERIAL PRIMARY KEY,
             	user_id     INT NOT NULL,
             	group_id    INT NOT NULL,
               UNIQUE (user_id, group_id),
-            	FOREIGN KEY (group_id) REFERENCES auth_group (id),
-            	FOREIGN KEY (user_id) REFERENCES user (id)
+            	FOREIGN KEY (group_id) REFERENCES "auth_group" (id),
+            	FOREIGN KEY (user_id) REFERENCES "user" (id)
             )
         """
     )

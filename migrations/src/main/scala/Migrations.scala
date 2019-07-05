@@ -1,10 +1,11 @@
-import com.liyaos.forklift.slick.{SlickMigrationCommandLineTool, SlickMigrationCommands}
+import com.liyaos.forklift.slick.{SlickMigrationCommandLineTool, SlickMigrationCommands, SlickMigrationManager}
 
 object PolymeshMigrations extends App
   with SlickMigrationCommandLineTool
   with SlickMigrationCommands
-  with PolymeshMigrationManager
+  with SlickMigrationManager
   with Codegen {
 
+  MigrationSummary
   execCommands(args.toList)
 }

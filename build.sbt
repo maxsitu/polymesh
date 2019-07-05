@@ -19,7 +19,7 @@ lazy val forkliftVersion = "0.3.1"
 
 lazy val slick = "com.typesafe.slick" %% "slick" % slickVersion
 lazy val slickHikariCp = "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
-lazy val h2db = "com.h2database" % "h2" % "1.4.192"
+lazy val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
 lazy val forkliftSlick = "com.liyaos" %% "scala-forklift-slick" % forkliftVersion
 lazy val forkliftGitTools = "com.liyaos" %% "scala-forklift-git-tools" % forkliftVersion
 lazy val slf4j = "org.slf4j" % "slf4j-nop" % "1.6.4"
@@ -40,7 +40,7 @@ lazy val migrationManager = (project in file("migration_manager"))
     commonSettings: _*
   )
   .settings(
-    libraryDependencies ++= Seq(slickHikariCp, h2db, forkliftSlick)
+    libraryDependencies ++= Seq(slickHikariCp, postgres, forkliftSlick)
   )
 
 lazy val migrations = (project in file("migrations"))
@@ -49,7 +49,7 @@ lazy val migrations = (project in file("migrations"))
     commonSettings: _*
   )
   .settings(
-    libraryDependencies ++= Seq(h2db, forkliftSlick, slf4j)
+    libraryDependencies ++= Seq(postgres, forkliftSlick, slf4j)
   )
 
 lazy val gitTools = Project("git-tools", file("tools/git"))
