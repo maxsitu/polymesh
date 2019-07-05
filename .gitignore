@@ -14,3 +14,4 @@ bin
 .settings
 logs
 cassandra_data
+migrations/src/main/scala/migrations/
