@@ -5,7 +5,7 @@ object M1 {
   PolymeshMigrations.migrations = PolymeshMigrations.migrations :+ SqlMigration(1)(
     List(
       sqlu"""
-             create table "user"
+             create table if not exists "user"
             (
               id          SERIAL PRIMARY KEY,
               password    VARCHAR(128) NOT NULL,
@@ -18,30 +18,24 @@ object M1 {
             	date_joined   TIMESTAMP NOT NULL,
             	email       VARCHAR(254) UNIQUE NOT NULL,
             	cell_phone  VARCHAR(255) NULL
-            )
-        """,
+            );
 
-      sqlu"""
-            create table "auth_group"
+            create table if not exists "auth_group"
             (
             	id    SERIAL PRIMARY KEY,
             	name  VARCHAR(150) NOT NULL,
             	UNIQUE (name)
-            )
-        """,
+            );
 
-      sqlu"""
-            create table "auth_content_type"
+            create table if not exists "auth_content_type"
             (
             	id        SERIAL PRIMARY KEY,
             	app_label VARCHAR(100) NOT NULL,
             	model     VARCHAR(100) NOT NULL,
             	UNIQUE (app_label, model)
-            )
-        """,
+            );
 
-   sqlu"""
-            create table "auth_permission"
+            create table if not exists "auth_permission"
             (
             	id    SERIAL PRIMARY KEY,
             	name  VARCHAR(255) NOT NULL,
@@ -50,10 +44,8 @@ object M1 {
             	unique (content_type_id, codename),
             	foreign key (content_type_id) references "auth_content_type" (id)
             );
-        """,
 
-      sqlu"""
-            create table "auth_group_permissions"
+            create table if not exists "auth_group_permissions"
             (
             	id        SERIAL PRIMARY KEY,
             	group_id  INT NOT NULL,
@@ -61,11 +53,9 @@ object M1 {
             	UNIQUE (group_id, permission_id),
             	FOREIGN KEY (permission_id) REFERENCES "auth_permission" (id),
             	FOREIGN KEY (group_id) REFERENCES "auth_group" (id)
-            )
-        """,
+            );
 
-      sqlu"""
-            create table "user_group"
+            create table if not exists "user_group"
             (
             	id          SERIAL PRIMARY KEY,
             	user_id     INT NOT NULL,
@@ -73,7 +63,7 @@ object M1 {
               UNIQUE (user_id, group_id),
             	FOREIGN KEY (group_id) REFERENCES "auth_group" (id),
             	FOREIGN KEY (user_id) REFERENCES "user" (id)
-            )
+            );
         """
     )
   )
