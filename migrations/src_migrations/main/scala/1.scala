@@ -27,22 +27,12 @@ object M1 {
             	UNIQUE (name)
             );
 
-            create table if not exists "auth_content_type"
-            (
-            	id        SERIAL PRIMARY KEY,
-            	app_label VARCHAR(100) NOT NULL,
-            	model     VARCHAR(100) NOT NULL,
-            	UNIQUE (app_label, model)
-            );
-
             create table if not exists "auth_permission"
             (
             	id    SERIAL PRIMARY KEY,
             	name  VARCHAR(255) NOT NULL,
-            	content_type_id   INT NOT NULL,
             	codename          VARCHAR(100) NOT NULL,
-            	unique (content_type_id, codename),
-            	foreign key (content_type_id) references "auth_content_type" (id)
+            	unique (codename)
             );
 
             create table if not exists "auth_group_permissions"
