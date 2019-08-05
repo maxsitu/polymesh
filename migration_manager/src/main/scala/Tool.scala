@@ -4,5 +4,8 @@ object Tool extends App
   with SlickRescueCommandLineTool
   with SlickRescueCommands
   with PolymeshCodegen {
-  execCommands(args.toList)
+  execCommands(
+    args
+      .toList
+  )
 }
