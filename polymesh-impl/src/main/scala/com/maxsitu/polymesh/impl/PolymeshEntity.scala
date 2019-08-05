@@ -38,50 +38,67 @@ class PolymeshEntity extends PersistentEntity {
   /**
     * The initial state. This is used if there is no snapshotted state to be found.
     */
-  override def initialState: PolymeshState = PolymeshState("Hello", LocalDateTime.now.toString)
+  override def initialState: PolymeshState = PolymeshState(
+    "Hello", LocalDateTime
+      .now
+      .toString
+  )
 
   /**
     * An entity can define different behaviours for different states, so the behaviour
     * is a function of the current state to a set of actions.
     */
   override def behavior: Behavior = {
-    case PolymeshState(message, _) => Actions().onCommand[UseGreetingMessage, Done] {
+    case PolymeshState(message, _) => Actions()
+      .onCommand[UseGreetingMessage, Done] {
 
       // Command handler for the UseGreetingMessage command
       case (UseGreetingMessage(newMessage), ctx, state) =>
         // In response to this command, we want to first persist it as a
         // GreetingMessageChanged event
-        ctx.thenPersist(
-          GreetingMessageChanged(newMessage)
-        ) { _ =>
-          // Then once the event is successfully persisted, we respond with done.
-          ctx.reply(Done)
-        }
+        ctx
+          .thenPersist(
+            GreetingMessageChanged(newMessage)
+          ) { _ =>
+            // Then once the event is successfully persisted, we respond with done.
+            ctx
+              .reply(Done)
+          }
 
-    }.onReadOnlyCommand[Hello, String] {
+    }
+      .onReadOnlyCommand[Hello, String] {
 
       // Command handler for the Hello command
       case (Hello(name), ctx, state) =>
         // Reply with a message built from the current message, and the name of
         // the person we're meant to say hello to.
-        ctx.reply(s"$message, $name!")
-
-    }.onEvent {
-
-      // Event handler for the GreetingMessageChanged event
-      case (GreetingMessageChanged(newMessage), state) =>
-        // We simply update the current state to use the greeting message from
-        // the event.
-        PolymeshState(newMessage, LocalDateTime.now().toString)
+        ctx
+          .reply(s"$message, $name!")
 
     }
+      .onEvent {
+
+        // Event handler for the GreetingMessageChanged event
+        case (GreetingMessageChanged(newMessage), state) =>
+          // We simply update the current state to use the greeting message from
+          // the event.
+          PolymeshState(
+            newMessage, LocalDateTime
+              .now()
+              .toString
+          )
+
+      }
   }
 }
 
 /**
   * The current state held by the persistent entity.
   */
-case class PolymeshState(message: String, timestamp: String)
+case class PolymeshState(
+  message: String,
+  timestamp: String
+)
 
 object PolymeshState {
   /**
@@ -93,14 +110,16 @@ object PolymeshState {
     * snapshot. Hence, a JSON format needs to be declared so that it can be
     * serialized and deserialized when storing to and from the database.
     */
-  implicit val format: Format[PolymeshState] = Json.format
+  implicit val format: Format[PolymeshState] = Json
+    .format
 }
 
 /**
   * This interface defines all the events that the PolymeshEntity supports.
   */
 sealed trait PolymeshEvent extends AggregateEvent[PolymeshEvent] {
-  def aggregateTag: AggregateEventTag[PolymeshEvent] = PolymeshEvent.Tag
+  def aggregateTag: AggregateEventTag[PolymeshEvent] = PolymeshEvent
+    .Tag
 }
 
 object PolymeshEvent {
@@ -120,7 +139,8 @@ object GreetingMessageChanged {
     * Events get stored and loaded from the database, hence a JSON format
     * needs to be declared so that they can be serialized and deserialized.
     */
-  implicit val format: Format[GreetingMessageChanged] = Json.format
+  implicit val format: Format[GreetingMessageChanged] = Json
+    .format
 }
 
 /**
@@ -147,7 +167,8 @@ object UseGreetingMessage {
     * that, a JSON format needs to be declared so the command can be serialized
     * and deserialized.
     */
-  implicit val format: Format[UseGreetingMessage] = Json.format
+  implicit val format: Format[UseGreetingMessage] = Json
+    .format
 }
 
 /**
@@ -169,7 +190,8 @@ object Hello {
     * that, a JSON format needs to be declared so the command can be serialized
     * and deserialized.
     */
-  implicit val format: Format[Hello] = Json.format
+  implicit val format: Format[Hello] = Json
+    .format
 }
 
 /**

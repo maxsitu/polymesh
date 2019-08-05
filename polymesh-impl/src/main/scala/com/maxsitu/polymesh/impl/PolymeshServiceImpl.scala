@@ -14,31 +14,53 @@ class PolymeshServiceImpl(persistentEntityRegistry: PersistentEntityRegistry) ex
 
   override def hello(id: String) = ServiceCall { _ =>
     // Look up the PolyMesh entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[PolymeshEntity](id)
+    val ref = persistentEntityRegistry
+      .refFor[PolymeshEntity](id)
 
     // Ask the entity the Hello command.
-    ref.ask(Hello(id))
+    ref
+      .ask(Hello(id))
   }
 
   override def useGreeting(id: String) = ServiceCall { request =>
     // Look up the PolyMesh entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[PolymeshEntity](id)
+    val ref = persistentEntityRegistry
+      .refFor[PolymeshEntity](id)
 
     // Tell the entity to use the greeting message specified.
-    ref.ask(UseGreetingMessage(request.message))
+    ref
+      .ask(
+        UseGreetingMessage(
+          request
+            .message
+        )
+      )
   }
 
 
   override def greetingsTopic(): Topic[api.GreetingMessageChanged] =
-    TopicProducer.singleStreamWithOffset {
-      fromOffset =>
-        persistentEntityRegistry.eventStream(PolymeshEvent.Tag, fromOffset)
-          .map(ev => (convertEvent(ev), ev.offset))
-    }
+    TopicProducer
+      .singleStreamWithOffset {
+        fromOffset =>
+          persistentEntityRegistry
+            .eventStream(
+              PolymeshEvent
+                .Tag, fromOffset
+            )
+            .map(
+              ev => (convertEvent(ev), ev
+                .offset)
+            )
+      }
 
   private def convertEvent(helloEvent: EventStreamElement[PolymeshEvent]): api.GreetingMessageChanged = {
-    helloEvent.event match {
-      case GreetingMessageChanged(msg) => api.GreetingMessageChanged(helloEvent.entityId, msg)
+    helloEvent
+      .event match {
+      case GreetingMessageChanged(msg) => api
+        .GreetingMessageChanged(
+          helloEvent
+            .entityId, msg
+        )
     }
   }
 }

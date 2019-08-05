@@ -75,7 +75,7 @@ lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
 lazy val `polymesh` = (project in file("."))
   .aggregate(
-    `polymesh-api`, `polymesh-impl`, `polymesh-stream-api`, `polymesh-stream-impl`, `migrations`,
+    `polymesh-api`, `polymesh-impl`, `migrations`,
     `migrationManager`, `generatedCode`, `gitTools`
   )
   .settings(
@@ -104,24 +104,25 @@ lazy val `polymesh-impl` = (project in file("polymesh-impl"))
   .settings(lagomForkedTestSettings)
   .dependsOn(`polymesh-api`)
 
-lazy val `polymesh-stream-api` = (project in file("polymesh-stream-api"))
+lazy val `auth-api` = (project in file("auth-api"))
   .settings(
     commonSettings: _*
   )
   .settings(
-    libraryDependencies ++= Seq(
-      lagomScaladslApi
-    )
+    libraryDependencies ++= Seq(lagomScaladslApi)
   )
 
-lazy val `polymesh-stream-impl` = (project in file("polymesh-stream-impl"))
+
+lazy val `auth-impl` = (project in file("auth-impl"))
   .enablePlugins(LagomScala)
   .settings(
     commonSettings: _*
   )
   .settings(
     libraryDependencies ++= Seq(
+      lagomScaladslPersistenceJdbc, lagomScaladslKafkaBroker,
       lagomScaladslTestKit, macwire, scalaTest
     )
   )
-  .dependsOn(`polymesh-stream-api`, `polymesh-api`)
+  .settings(lagomForkedTestSettings)
+  .dependsOn(`auth-api`)
