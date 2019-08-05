@@ -12,6 +12,6 @@ bin
 .tmpBin
 .factorypath
 .settings
+*.iml
 logs
-cassandra_data
-/migrations/src/main/scala/migrations/
+cassandra_data/migrations/src/main/scala/migrations/
