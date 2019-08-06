@@ -3,7 +3,7 @@ name := "polymesh"
 lazy val commonSettings = Seq(
   organization := "com.maxsitu",
   version := "1.0-SNAPSHOT",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.12.8",
   scalacOptions += "-deprecation",
   scalacOptions += "-feature",
   resolvers ++= Seq(Resolver.sonatypeRepo("snapshots"), Resolver.jcenterRepo)
@@ -23,6 +23,12 @@ lazy val postgres = "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
 lazy val forkliftSlick = "com.liyaos" %% "scala-forklift-slick" % forkliftVersion
 lazy val forkliftGitTools = "com.liyaos" %% "scala-forklift-git-tools" % forkliftVersion
 lazy val slf4j = "org.slf4j" % "slf4j-nop" % "1.6.4"
+lazy val base64 = "me.lessis" %% "base64" % "0.2.0"
+lazy val jwt = "com.pauldijou" %% "jwt-play-json" % "0.12.1"
+lazy val accord = "com.wix" %% "accord-core" % "0.6.1"
+
+lagomCassandraEnabled in ThisBuild := false
+lagomKafkaEnabled in ThisBuild := false
 
 /**
   * Helper projects declared
@@ -75,34 +81,53 @@ lazy val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
 lazy val `polymesh` = (project in file("."))
   .aggregate(
-    `polymesh-api`, `polymesh-impl`, `migrations`,
+    `auth-api`, `auth-impl`, `migrations`, `account-api`, `account-impl`,
     `migrationManager`, `generatedCode`, `gitTools`
   )
   .settings(
     commonSettings: _*
   )
 
-lazy val `polymesh-api` = (project in file("polymesh-api"))
+lazy val `common` = (project in file("common"))
+  .settings(
+    commonSettings: _*
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      lagomScaladslApi,
+      lagomScaladslServer,
+      jwt,
+      accord
+    )
+  )
+
+
+lazy val `account-api` = (project in file("account-api"))
   .settings(
     commonSettings: _*
   )
   .settings(
     libraryDependencies ++= Seq(lagomScaladslApi)
   )
+  .dependsOn(`common`)
 
-lazy val `polymesh-impl` = (project in file("polymesh-impl"))
+lazy val `account-impl` = (project in file("account-impl"))
   .enablePlugins(LagomScala)
   .settings(
     commonSettings: _*
   )
   .settings(
     libraryDependencies ++= Seq(
-      lagomScaladslPersistenceCassandra, lagomScaladslKafkaBroker,
-      lagomScaladslTestKit, macwire, scalaTest
+      lagomScaladslPersistenceJdbc,
+      lagomScaladslTestKit,
+      macwire,
+      scalaTest,
+      slick,
+      slickHikariCp,
+      postgres
     )
   )
-  .settings(lagomForkedTestSettings)
-  .dependsOn(`polymesh-api`)
+  .dependsOn(`common`, `account-api`)
 
 lazy val `auth-api` = (project in file("auth-api"))
   .settings(
